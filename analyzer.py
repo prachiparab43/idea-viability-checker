@@ -1,95 +1,73 @@
-import requests
-import json
-
-# Using free Hugging Face inference API
-# Sign up at huggingface.co for free API token
-
-HUGGINGFACE_API_KEY = ""  # Replace with your key
+import os
 
 def analyze_idea(idea, industry):
-    """
-    Analyze idea using AI models
-    """
+    """Analyze startup idea with rule-based system"""
     
-    # Simple rule-based scoring as fallback
-    # Replace with actual API calls
-    
-    analysis = {
-        'score': calculate_score(idea, industry),
-        'market_size': estimate_market_size(industry),
-        'competition': check_competition(idea),
-        'trends': get_industry_trends(industry),
-        'recommendations': generate_recommendations(idea),
-        'risks': identify_risks(idea)
-    }
-    
-    return analysis
-
-def calculate_score(idea, industry):
-    """Simple scoring algorithm"""
-    score = 50  # Base score
-    
-    # Idea length factor
-    if len(idea.split()) > 10:
-        score += 10
+    # Calculate score
+    score = 50
     
     # Industry bonus
-    hot_industries = ['AI', 'SaaS', 'Healthcare', 'Fintech']
+    hot_industries = ['Technology', 'AI', 'Healthcare', 'Fintech']
     if industry in hot_industries:
         score += 15
     
-    # Problem-solution check
+    # Idea quality
+    if len(idea.split()) > 10:
+        score += 10
+    
     problem_keywords = ['solve', 'help', 'improve', 'reduce', 'automate']
-    if any(keyword in idea.lower() for keyword in problem_keywords):
+    if any(word in idea.lower() for word in problem_keywords):
         score += 20
     
-    return min(score, 100)
-
-def estimate_market_size(industry):
-    """Simple market size estimation"""
-    sizes = {
+    score = min(score, 100)
+    
+    # Market size
+    market_sizes = {
         'Technology': 'Large',
         'Healthcare': 'Very Large',
         'Education': 'Large',
         'Finance': 'Large',
-        'Retail': 'Very Large',
+        'AI': 'Very Large',
         'Other': 'Medium'
     }
-    return sizes.get(industry, 'Medium')
-
-def check_competition(idea):
-    """Basic competition check"""
-    keywords = idea.lower().split()
-    if any(word in ['app', 'platform', 'software'] for word in keywords):
-        return 'High'
-    return 'Medium'
-
-def get_industry_trends(industry):
-    """Industry trends"""
+    market_size = market_sizes.get(industry, 'Medium')
+    
+    # Competition
+    competitive_keywords = ['app', 'platform', 'marketplace', 'social']
+    if any(word in idea.lower() for word in competitive_keywords):
+        competition = 'High'
+    else:
+        competition = 'Medium'
+    
+    # Recommendations
+    recommendations = [
+        "Validate with target customers first",
+        "Build MVP in 3 months",
+        "Focus on one core feature",
+        "Research 3 competitors"
+    ]
+    
+    # Risks
+    risks = [
+        "Market competition",
+        "User acquisition cost",
+        "Technical complexity"
+    ]
+    
+    # Trends
     trends = {
-        'Technology': 'AI integration, Remote work solutions',
+        'Technology': 'AI integration, Remote solutions',
         'Healthcare': 'Telemedicine, Health tech',
-        'Education': 'EdTech, Online learning',
+        'Education': 'Online learning, EdTech',
         'Finance': 'FinTech, Digital banking'
     }
-    return trends.get(industry, 'Growing digital adoption')
-
-def generate_recommendations(idea):
-    """Generate recommendations"""
-    recs = [
-        "Validate with target customers",
-        "Create MVP within 3 months",
-        "Focus on one core feature first",
-        "Research competitors thoroughly"
-    ]
-    return recs
-
-def identify_risks(idea):
-    """Identify potential risks"""
-    risks = [
-        "Market saturation",
-        "High development costs",
-        "User acquisition challenges"
-    ]
-
-    return risks
+    
+    return {
+        'score': score,
+        'market_size': market_size,
+        'competition': competition,
+        'trends': trends.get(industry, 'Digital transformation'),
+        'recommendations': recommendations,
+        'risks': risks,
+        'idea_preview': idea[:100] + '...' if len(idea) > 100 else idea
+    }
