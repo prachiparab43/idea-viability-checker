@@ -4,7 +4,7 @@ import json
 # Using free Hugging Face inference API
 # Sign up at huggingface.co for free API token
 
-HUGGINGFACE_API_KEY = "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"  # Replace with your key
+HUGGINGFACE_API_KEY = ""  # Replace with your key
 
 def analyze_idea(idea, industry):
     """
@@ -91,4 +91,5 @@ def identify_risks(idea):
         "High development costs",
         "User acquisition challenges"
     ]
+
     return risks
